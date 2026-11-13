@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menu Kopi Sudut Jalan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ====== WARNA: ubah di sini kalau ingin ganti nuansa ====== */
+  :root {
+    --hijau: #1f6b4a;        /* hijau cangkir blirik */
+    --hijau-tua: #12372a;
+    --kertas: #f3f6f1;       /* latar halaman */
+    --tinta: #16261f;        /* warna tulisan */
+    --tinta-redup: #56685f;
+    --kuning: #f2b632;       /* penanda favorit */
+    --garis: #c5d1c9;
+    --bintik: rgba(255, 255, 255, 0.85);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --hijau: #1a5a3f;
+      --hijau-tua: #0d2a20;
+      --kertas: #0f1c16;
+      --tinta: #e8f0ea;
+      --tinta-redup: #9db0a5;
+      --kuning: #f2b632;
+      --garis: #2e4439;
+      --bintik: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 4.5rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  body {
+    margin: 0;
+    background: var(--kertas);
+    color: var(--tinta);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  /* ====== KEPALA HALAMAN (motif bintik ala cangkir blirik) ====== */
+  .kepala {
+    background-color: var(--hijau);
+    background-image:
+      radial-gradient(var(--bintik) 1.6px, transparent 2.2px),
+      radial-gradient(var(--bintik) 1px, transparent 1.6px),
+      radial-gradient(var(--bintik) 2.4px, transparent 3px),
+      radial-gradient(var(--bintik) 0.8px, transparent 1.4px);
+    background-size: 47px 53px, 31px 29px, 89px 97px, 19px 23px;
+    background-position: 0 0, 13px 17px, 41px 29px, 7px 11px;
+    padding: 2.5rem 1.25rem 2rem;
+  }
+  .papan {
+    max-width: 34rem;
+    margin: 0 auto;
+    background: var(--hijau-tua);
+    color: #f3f6f1;
+    padding: 1.5rem 1.25rem 1.25rem;
+    border-radius: 6px;
+  }
+  .papan h1 {
+    font-family: "Bowlby One", "Arial Black", Impact, sans-serif;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 11vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: 0.01em;
+    margin: 0 0 0.75rem;
+  }
+  .papan p { margin: 0; color: #cfe0d5; }
+
+  /* ====== NAVIGASI KATEGORI ====== */
+  .kategori {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--kertas);
+    border-bottom: 2px solid var(--hijau);
+  }
+  .kategori ul {
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 0.5rem 1.25rem;
+    list-style: none;
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+  }
+  .kategori a {
+    display: block;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--hijau);
+    color: var(--tinta);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .kategori a:hover { background: var(--hijau); color: #fff; }
+  a:focus-visible { outline: 3px solid var(--kuning); outline-offset: 2px; }
+
+  /* ====== DAFTAR MENU ====== */
+  main {
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 0.5rem 1.25rem 2rem;
+  }
+  section { padding-top: 1.75rem; }
+  h2 {
+    font-family: "Bowlby One", "Arial Black", Impact, sans-serif;
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 1.1;
+    color: var(--hijau);
+    margin: 0 0 0.75rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    h2 { color: #6fc79b; }
+  }
+  .daftar { list-style: none; margin: 0; padding: 0; }
+  .daftar li { padding: 0.7rem 0; border-bottom: 1px solid var(--garis); }
+  .daftar li:last-child { border-bottom: 0; }
+  .baris {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .nama { font-weight: 700; font-size: 1.05rem; }
+  .titik {
+    flex: 1;
+    min-width: 1rem;
+    border-bottom: 2px dotted var(--garis);
+    transform: translateY(-0.25em);
+  }
+  .harga {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .ket { margin: 0.15rem 0 0; color: var(--tinta-redup); font-size: 0.9rem; }
+  .favorit {
+    display: inline-block;
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    background: var(--kuning);
+    color: #2b2000;
+    font-size: 0.75rem;
+    font-weight: 700;
+    vertical-align: 0.1em;
+  }
+
+  /* ====== KAKI HALAMAN ====== */
+  footer {
+    background: var(--hijau-tua);
+    color: #cfe0d5;
+    padding: 1.5rem 1.25rem 2rem;
+  }
+  footer div { max-width: 34rem; margin: 0 auto; }
+  footer p { margin: 0 0 0.35rem; }
+  footer strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<header class="kepala">
+  <div class="papan">
+    <!-- GANTI nama usaha di bawah ini -->
+    <h1>Kopi Sudut Jalan</h1>
+    <p>Buka setiap hari, 07.00 sampai 22.00</p>
+  </div>
+</header>
+
+<nav class="kategori" aria-label="Kategori menu">
+  <ul>
+    <li><a href="#kopi">Kopi</a></li>
+    <li><a href="#minuman">Minuman lain</a></li>
+    <li><a href="#makanan">Makanan</a></li>
+    <li><a href="#camilan">Camilan</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!--
+    CARA MENAMBAH MENU:
+    salin satu blok <li> ... </li> lalu ubah nama, harga, dan keterangannya.
+    Hapus <span class="favorit">Favorit</span> kalau bukan menu andalan.
+  -->
+
+  <section id="kopi">
+    <h2>Kopi</h2>
+    <ul class="daftar">
+      <li>
+        <div class="baris">
+          <span class="nama">Kopi susu gula aren <span class="favorit">Favorit</span></span>
+          <span class="titik"></span>
+          <span class="harga">Rp15.000</span>
+        </div>
+        <p class="ket">Es kopi, susu segar, gula aren cair</p>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Kopi tubruk</span>
+          <span class="titik"></span>
+          <span class="harga">Rp8.000</span>
+        </div>
+        <p class="ket">Kopi hitam seduh langsung di gelas</p>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Kopi susu panas</span>
+          <span class="titik"></span>
+          <span class="harga">Rp12.000</span>
+        </div>
+        <p class="ket">Kopi hitam dengan susu kental manis</p>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Es kopi hitam</span>
+          <span class="titik"></span>
+          <span class="harga">Rp10.000</span>
+        </div>
+        <p class="ket">Tanpa gula, bisa minta manis</p>
+      </li>
+    </ul>
+  </section>
+
+  <section id="minuman">
+    <h2>Minuman lain</h2>
+    <ul class="daftar">
+      <li>
+        <div class="baris">
+          <span class="nama">Es teh manis</span>
+          <span class="titik"></span>
+          <span class="harga">Rp5.000</span>
+        </div>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Teh tarik</span>
+          <span class="titik"></span>
+          <span class="harga">Rp10.000</span>
+        </div>
+        <p class="ket">Panas atau dingin</p>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Es jeruk peras</span>
+          <span class="titik"></span>
+          <span class="harga">Rp8.000</span>
+        </div>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Cokelat panas</span>
+          <span class="titik"></span>
+          <span class="harga">Rp12.000</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section id="makanan">
+    <h2>Makanan</h2>
+    <ul class="daftar">
+      <li>
+        <div class="baris">
+          <span class="nama">Nasi goreng kampung <span class="favorit">Favorit</span></span>
+          <span class="titik"></span>
+          <span class="harga">Rp20.000</span>
+        </div>
+        <p class="ket">Telur mata sapi, kerupuk, acar</p>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Mie goreng telur</span>
+          <span class="titik"></span>
+          <span class="harga">Rp15.000</span>
+        </div>
+        <p class="ket">Bisa pedas, bilang saja ke kasir</p>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Nasi telur dadar</span>
+          <span class="titik"></span>
+          <span class="harga">Rp12.000</span>
+        </div>
+        <p class="ket">Dengan sambal dan lalapan</p>
+      </li>
+    </ul>
+  </section>
+
+  <section id="camilan">
+    <h2>Camilan</h2>
+    <ul class="daftar">
+      <li>
+        <div class="baris">
+          <span class="nama">Pisang goreng</span>
+          <span class="titik"></span>
+          <span class="harga">Rp10.000</span>
+        </div>
+        <p class="ket">Tiga potong, digoreng saat dipesan</p>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Roti bakar cokelat keju</span>
+          <span class="titik"></span>
+          <span class="harga">Rp12.000</span>
+        </div>
+      </li>
+      <li>
+        <div class="baris">
+          <span class="nama">Tahu goreng</span>
+          <span class="titik"></span>
+          <span class="harga">Rp8.000</span>
+        </div>
+        <p class="ket">Lima potong dengan cabai rawit</p>
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <div>
+    <p><strong>Pesan dan bayar di kasir.</strong></p>
+    <p>Sebutkan nomor meja, pesanan kami antar.</p>
+    <!-- GANTI alamat di bawah ini -->
+    <p>Jl. Contoh No. 1</p>
+  </div>
+</footer>
+
+</body>
+</html>
