@@ -91,6 +91,116 @@
   @media (hover: hover) { .logo-link:hover .logo { transform: scale(1.06); } }
   .logo-link:focus-visible { outline: 3px solid #9a5b25; outline-offset: 4px; }
   @media (prefers-reduced-motion: reduce) { .logo-link .logo { transition: none; } }
+
+  /* ===================================================
+     STATUS BUKA/TUTUP + PESAN LEWAT WHATSAPP
+     =================================================== */
+  #ya-status {
+    display: flex; width: fit-content; margin: 0 auto 1.5rem;
+    align-items: center; gap: 0.5rem;
+    padding: 0.35rem 0.95rem; border-radius: 999px;
+    font-size: 0.85rem; background: rgba(255, 255, 255, 0.65); color: #3b342e;
+  }
+  .ya-titik { width: 8px; height: 8px; border-radius: 50%; background: #a39b92; flex-shrink: 0; }
+  #ya-status.ya-buka .ya-titik { background: #2f9e5b; animation: ya-denyut 2.2s infinite; }
+  @keyframes ya-denyut {
+    0% { box-shadow: 0 0 0 0 rgba(47, 158, 91, 0.55); }
+    70%, 100% { box-shadow: 0 0 0 8px rgba(47, 158, 91, 0); }
+  }
+
+  .ya-ctl { display: inline-flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+  .ya-tambah {
+    font: inherit; font-size: 0.85rem; font-weight: 500; color: #9a5b25;
+    background: transparent; border: 1.5px solid #9a5b25; border-radius: 999px;
+    padding: 0.3rem 0.9rem; min-height: 36px; cursor: pointer;
+  }
+  .ya-tambah:hover { background: #9a5b25; color: #fff; }
+  .ya-kurang, .ya-plus {
+    width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+    border: 1.5px solid #9a5b25; background: #9a5b25; color: #fff;
+    font: inherit; font-size: 1.15rem; line-height: 1; padding: 0;
+  }
+  .ya-kurang { background: transparent; color: #9a5b25; }
+  .ya-jml { min-width: 1.6rem; text-align: center; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .ya-ctl button:focus-visible, #ya-bar:focus-visible, .ya-panel :focus-visible { outline: 3px solid #e2a564; outline-offset: 2px; }
+  .ya-bawah { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 0.35rem; }
+  .ya-bawah .ket { margin: 0; }
+  li.ya-polos { align-items: center; }
+  li.ya-polos > span:first-child { flex: 1; }
+
+  #ya-bar {
+    position: fixed; z-index: 50; left: 50%; transform: translateX(-50%);
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    width: min(560px, calc(100% - 32px));
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    padding: 0.95rem 1.3rem; border: 0; border-radius: 999px;
+    background: #1d1a18; color: #fff; font: inherit; font-weight: 500; cursor: pointer;
+    box-shadow: 0 14px 32px -12px rgba(0, 0, 0, 0.5);
+  }
+  #ya-bar[hidden] { display: none; }
+  #ya-bar .ya-total { color: #f1c28f; }
+  body.ya-ada { padding-bottom: 96px; }
+
+  #ya-lembar {
+    position: fixed; inset: 0; z-index: 60; background: rgba(20, 14, 10, 0.45);
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  #ya-lembar[hidden] { display: none; }
+  .ya-panel {
+    background: #fffdf9; color: #1d1a18; width: min(560px, 100%); max-height: 90vh; overflow: auto;
+    border-radius: 22px 22px 0 0; padding: 1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    font-family: "Jost", "Segoe UI", system-ui, sans-serif; line-height: 1.45;
+    animation: ya-naik 0.28s ease-out;
+  }
+  @keyframes ya-naik { from { transform: translateY(48px); opacity: 0; } }
+  .ya-kepala { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem; }
+  .ya-judul { font-size: 1.3rem; font-weight: 500; margin: 0; }
+  .ya-tutup-btn { width: 40px; height: 40px; border: 0; border-radius: 50%; background: #f1ebe3; font-size: 1.3rem; cursor: pointer; color: inherit; }
+  .ya-info-tutup { background: #f6ece0; color: #7a4a1f; border-radius: 12px; padding: 0.7rem 0.9rem; font-size: 0.9rem; margin: 0.75rem 0 0; }
+  .ya-baris { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.1rem 1rem; padding: 0.8rem 0; border-bottom: 1px solid #ebe4da; }
+  .ya-nama { font-size: 1rem; }
+  .ya-sub { font-size: 0.85rem; color: #6b635b; grid-column: 1; }
+  .ya-jumlah { display: flex; justify-content: space-between; font-weight: 500; font-size: 1.05rem; padding: 0.9rem 0 0.25rem; }
+  .ya-jumlah span:last-child { color: #9a5b25; }
+  .ya-label { display: block; font-size: 0.85rem; color: #5c5650; margin: 1rem 0 0.35rem; }
+  .ya-panel input[type="text"], .ya-panel textarea {
+    width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; color: inherit;
+    padding: 0.65rem 0.85rem; border: 1.5px solid #ddd6cc; border-radius: 12px; background: #fff;
+  }
+  .ya-panel textarea { resize: vertical; min-height: 64px; }
+  .ya-pilih { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .ya-opsi { position: relative; }
+  .ya-opsi input { position: absolute; opacity: 0; pointer-events: none; }
+  .ya-opsi span { display: inline-block; padding: 0.5rem 1rem; border-radius: 999px; border: 1.5px solid #ddd6cc; cursor: pointer; font-size: 0.95rem; }
+  .ya-opsi input:checked + span { background: #1d1a18; border-color: #1d1a18; color: #fff; }
+  .ya-opsi input:focus-visible + span { outline: 3px solid #e2a564; outline-offset: 2px; }
+  #ya-meja-wrap[hidden] { display: none; }
+  .ya-kirim {
+    display: flex; justify-content: center; align-items: center; margin-top: 1.4rem;
+    padding: 1rem; border-radius: 999px; background: #1f8f4e; color: #fff;
+    font-weight: 500; font-size: 1.02rem; text-decoration: none;
+  }
+  .ya-kirim:hover { background: #18773f; }
+  .ya-kosongkan { display: block; margin: 0.9rem auto 0; background: none; border: 0; color: #8a8178; font: inherit; font-size: 0.85rem; text-decoration: underline; cursor: pointer; }
+  footer .info a { color: inherit; }
+  @media (prefers-reduced-motion: reduce) {
+    .ya-panel { animation: none; }
+    #ya-status.ya-buka .ya-titik { animation: none; }
+  }
+
+  /* ====== MENU HABIS + SAPAAN ====== */
+  .habis {
+    display: inline-block; margin-left: 0.4rem; padding: 0 0.55rem;
+    border-radius: 999px; background: #e3ddd5; color: #5f5850;
+    font-size: 0.72rem; font-weight: 500; vertical-align: 0.15em; white-space: nowrap;
+  }
+  li.ya-habis .nama, li.ya-habis > span:first-child, li.ya-habis .ket { color: #8f877e; }
+  li.ya-habis .harga { color: #a39b92; text-decoration: line-through; }
+  .item.ya-habis .harga { color: #a39b92; text-decoration: line-through; }
+  .item.ya-habis .foto { filter: grayscale(0.7) drop-shadow(0 14px 14px rgba(40, 25, 15, 0.18)); }
+  #ya-sapa {
+    text-align: center; margin: 0 0 0.6rem; font-size: 1.05rem; color: #1d1a18;
+  }
 </style>
 </head>
 <body>
@@ -107,6 +217,7 @@
     satu menu = satu <li>...</li>. Ganti isinya setiap bulan.
   -->
 
+  <div id="ya-menu" data-halaman="spesial">
   <h2>Minuman</h2>
   <ul>
     <li>
@@ -126,11 +237,386 @@
       <p class="ket">Tart renyah dengan krim dan stroberi segar</p>
     </li>
   </ul>
+  </div>
 
   <footer>
     <p class="merek">YA Coffee &amp; Cake</p>
   </footer>
 
 </main>
+
+<!-- Tombol pesanan (muncul setelah pelanggan menambah menu) -->
+<button id="ya-bar" type="button" hidden></button>
+
+<!-- Lembar pesanan -->
+<div id="ya-lembar" hidden>
+  <div class="ya-panel" role="dialog" aria-modal="true" aria-labelledby="ya-judul">
+    <div class="ya-kepala">
+      <p class="ya-judul" id="ya-judul">Pesananmu</p>
+      <button class="ya-tutup-btn" type="button" aria-label="Tutup">×</button>
+    </div>
+    <p class="ya-info-tutup" id="ya-info-tutup" hidden></p>
+    <div id="ya-daftar"></div>
+    <div class="ya-jumlah"><span>Total</span><span id="ya-total"></span></div>
+
+    <label class="ya-label" for="ya-nama">Nama</label>
+    <input type="text" id="ya-nama" autocomplete="given-name" placeholder="Nama untuk pesanan">
+
+    <span class="ya-label">Pesanan untuk</span>
+    <div class="ya-pilih">
+      <label class="ya-opsi"><input type="radio" name="ya-cara" value="Makan di sini" checked><span>Makan di sini</span></label>
+      <label class="ya-opsi"><input type="radio" name="ya-cara" value="Bawa pulang"><span>Bawa pulang</span></label>
+    </div>
+    <div id="ya-meja-wrap">
+      <label class="ya-label" for="ya-meja">Nomor meja (kalau sudah duduk)</label>
+      <input type="text" id="ya-meja" inputmode="numeric" placeholder="Contoh: 4">
+    </div>
+
+    <label class="ya-label" for="ya-catatan">Catatan (opsional)</label>
+    <textarea id="ya-catatan" placeholder="Contoh: es sedikit, gula dikurangi"></textarea>
+
+    <a class="ya-kirim" id="ya-kirim" href="#" target="_blank" rel="noopener">Kirim pesanan lewat WhatsApp</a>
+    <button class="ya-kosongkan" type="button" id="ya-kosongkan">Kosongkan pesanan</button>
+  </div>
+</div>
+
+<script>
+/* ===================================================
+   PENGATURAN (boleh diubah)
+   =================================================== */
+var YA_WA    = '6285186171117';   // nomor WhatsApp (pakai 62, tanpa 0 di depan)
+var YA_BUKA  = '06:30';           // jam buka
+var YA_TUTUP = '22:30';           // jam tutup
+
+(function () {
+  var KEY = 'yaPesanan';
+  function keMenit(j) { var p = j.split(':'); return (+p[0]) * 60 + (+p[1]); }
+  function jamTeks(j) { return j.replace(':', '.'); }
+  var BUKA = keMenit(YA_BUKA), TUTUP = keMenit(YA_TUTUP);
+  function rp(n) { return 'Rp' + n.toLocaleString('id-ID'); }
+
+  /* ---------- Jam di Indonesia bagian barat (WIB) ---------- */
+  function menitSekarang() {
+    try {
+      var p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+      var h = 0, m = 0;
+      p.forEach(function (x) { if (x.type === 'hour') h = +x.value; if (x.type === 'minute') m = +x.value; });
+      return h * 60 + m;
+    } catch (e) { var d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
+  }
+  function status() {
+    var t = menitSekarang();
+    if (t >= BUKA && t < TUTUP) {
+      var sisa = TUTUP - t;
+      return { buka: true, teks: sisa <= 30 ? 'Buka · tutup ' + sisa + ' menit lagi' : 'Buka sekarang · tutup pukul ' + jamTeks(YA_TUTUP) };
+    }
+    return { buka: false, teks: 'Sedang tutup · buka ' + (t < BUKA ? 'hari ini' : 'besok') + ' pukul ' + jamTeks(YA_BUKA) };
+  }
+  function tampilStatus() {
+    var el = document.getElementById('ya-status');
+    if (!el) return;
+    var s = status();
+    el.className = s.buka ? 'ya-buka' : 'ya-tutup';
+    el.innerHTML = '<span class="ya-titik" aria-hidden="true"></span><span></span>';
+    el.lastChild.textContent = s.teks;
+  }
+  tampilStatus();
+  setInterval(tampilStatus, 60000);
+
+  /* ---------- Keranjang (tersimpan selama tab terbuka) ---------- */
+  var cart = {};
+  try { cart = JSON.parse(sessionStorage.getItem(KEY)) || {}; } catch (e) {}
+  function simpan() { try { sessionStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) {} }
+  function ubah(nama, harga, d) {
+    var q = (cart[nama] ? cart[nama].q : 0) + d;
+    if (q <= 0) delete cart[nama]; else cart[nama] = { h: harga, q: q };
+    simpan(); gambarUlang();
+  }
+
+  function buatCtl(nama, harga) {
+    var ctl = document.createElement('div');
+    ctl.className = 'ya-ctl';
+    ctl.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      ubah(nama, harga, b.classList.contains('ya-kurang') ? -1 : 1);
+      var fokus = ctl.querySelector(b.classList.contains('ya-kurang') && !cart[nama] ? '.ya-tambah' : '.' + b.className);
+      if (fokus) fokus.focus();
+    });
+    ctl.gambar = function () {
+      var q = cart[nama] ? cart[nama].q : 0;
+      ctl.innerHTML = q === 0
+        ? '<button type="button" class="ya-tambah">+ Tambah</button>'
+        : '<button type="button" class="ya-kurang">−</button><span class="ya-jml" aria-live="polite"></span><button type="button" class="ya-plus">+</button>';
+      ctl.querySelectorAll('button').forEach(function (b) {
+        b.setAttribute('aria-label', (b.classList.contains('ya-kurang') ? 'Kurangi ' : 'Tambah ') + nama);
+      });
+      if (q) ctl.querySelector('.ya-jml').textContent = q;
+    };
+    return ctl;
+  }
+
+  /* ---------- Pasang tombol "Tambah" di setiap menu ---------- */
+  var semuaCtl = [];
+  function pasang() {
+  semuaCtl = [];
+  document.querySelectorAll('main ul li').forEach(function (li) {
+    var hEl = li.querySelector('.harga'); if (!hEl) return;
+    var harga = parseInt(hEl.textContent.replace(/\D/g, ''), 10); if (!harga) return;
+    var nEl = li.querySelector('.nama') || li.querySelector('span');
+    var salin = nEl.cloneNode(true);
+    salin.querySelectorAll('.andalan, .favorit, .habis').forEach(function (x) { x.remove(); });
+    var nama = salin.textContent.replace(/\s+/g, ' ').trim();
+    if (li.classList.contains('ya-habis')) { if (cart[nama]) { delete cart[nama]; simpan(); } return; }
+    if (cart[nama] && cart[nama].h !== harga) { cart[nama].h = harga; simpan(); }
+    if (li.querySelector('.ya-ctl')) return;
+    var ctl = buatCtl(nama, harga);
+    if (li.querySelector('.baris')) {
+      var bawah = document.createElement('div'); bawah.className = 'ya-bawah';
+      var ket = li.querySelector('.ket');
+      if (ket) bawah.appendChild(ket); else bawah.appendChild(document.createElement('span'));
+      bawah.appendChild(ctl); li.appendChild(bawah);
+    } else { li.classList.add('ya-polos'); li.appendChild(ctl); }
+    semuaCtl.push(ctl);
+  });
+  }
+  pasang();
+  // Dipanggil lagi setelah menu dari Google Sheets selesai dimuat
+  window.yaPasang = function () { pasang(); gambarUlang(); };
+
+  var bar = document.getElementById('ya-bar');
+  var lembar = document.getElementById('ya-lembar');
+  var daftar = document.getElementById('ya-daftar');
+  var kirim = document.getElementById('ya-kirim');
+
+  function hitung() {
+    var n = 0, total = 0;
+    Object.keys(cart).forEach(function (k) { n += cart[k].q; total += cart[k].q * cart[k].h; });
+    return { n: n, total: total };
+  }
+
+  function gambarUlang() {
+    semuaCtl.forEach(function (c) { c.gambar(); });
+    var h = hitung();
+    bar.hidden = h.n === 0;
+    document.body.classList.toggle('ya-ada', h.n > 0);
+    bar.innerHTML = '<span>' + h.n + ' item · <span class="ya-total">' + rp(h.total) + '</span></span><span>Lihat pesanan →</span>';
+    if (!lembar.hidden) gambarLembar();
+  }
+
+  function gambarLembar() {
+    var h = hitung();
+    if (h.n === 0) { tutupLembar(); return; }
+    daftar.innerHTML = '';
+    Object.keys(cart).forEach(function (nama) {
+      var it = cart[nama];
+      var row = document.createElement('div'); row.className = 'ya-baris';
+      var n = document.createElement('div'); n.className = 'ya-nama'; n.textContent = nama;
+      var ctl = buatCtl(nama, it.h); ctl.gambar(); ctl.style.gridRow = 'span 2';
+      var s = document.createElement('div'); s.className = 'ya-sub'; s.textContent = it.q + ' × ' + rp(it.h) + ' = ' + rp(it.q * it.h);
+      row.appendChild(n); row.appendChild(ctl); row.appendChild(s);
+      daftar.appendChild(row);
+    });
+    document.getElementById('ya-total').textContent = rp(h.total);
+    var st = status(), info = document.getElementById('ya-info-tutup');
+    info.hidden = st.buka;
+    info.textContent = 'Kedai sedang tutup. Pesananmu tetap terkirim dan akan kami balas saat buka pukul ' + jamTeks(YA_BUKA) + '.';
+  }
+
+  var pemicu = null;
+  function bukaLembar() {
+    pemicu = document.activeElement;
+    lembar.hidden = false; document.body.style.overflow = 'hidden';
+    gambarLembar(); lembar.querySelector('.ya-tutup-btn').focus();
+  }
+  function tutupLembar() {
+    lembar.hidden = true; document.body.style.overflow = '';
+    if (pemicu && pemicu.focus && !bar.hidden) pemicu.focus();
+  }
+
+  bar.addEventListener('click', bukaLembar);
+  lembar.querySelector('.ya-tutup-btn').addEventListener('click', tutupLembar);
+  lembar.addEventListener('click', function (e) { if (e.target === lembar) tutupLembar(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lembar.hidden) tutupLembar(); });
+
+  // Nomor meja hanya untuk "Makan di sini"
+  lembar.querySelectorAll('input[name="ya-cara"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      document.getElementById('ya-meja-wrap').hidden = r.value !== 'Makan di sini' || !r.checked;
+    });
+  });
+
+  // Ingat nama pelanggan selama tab terbuka
+  var namaEl = document.getElementById('ya-nama');
+  try { namaEl.value = sessionStorage.getItem('yaNama') || ''; } catch (e) {}
+  namaEl.addEventListener('input', function () { try { sessionStorage.setItem('yaNama', namaEl.value); } catch (e) {} });
+
+  // Susun pesan WhatsApp tepat sebelum dikirim
+  kirim.addEventListener('click', function () {
+    var h = hitung();
+    var baris = ['Halo YA Coffee & Cake, saya mau pesan:', ''];
+    Object.keys(cart).forEach(function (nama) {
+      baris.push(cart[nama].q + 'x ' + nama + ' — ' + rp(cart[nama].q * cart[nama].h));
+    });
+    baris.push('', 'Total: ' + rp(h.total));
+    var nama = namaEl.value.trim();
+    if (nama) baris.push('Nama: ' + nama);
+    var cara = lembar.querySelector('input[name="ya-cara"]:checked').value;
+    var meja = document.getElementById('ya-meja').value.trim();
+    baris.push(cara + (cara === 'Makan di sini' && meja ? ', meja ' + meja : ''));
+    var cat = document.getElementById('ya-catatan').value.trim();
+    if (cat) baris.push('Catatan: ' + cat);
+    kirim.href = 'https://wa.me/' + YA_WA + '?text=' + encodeURIComponent(baris.join('\n'));
+  });
+
+  document.getElementById('ya-kosongkan').addEventListener('click', function () {
+    cart = {}; simpan(); gambarUlang(); tutupLembar();
+  });
+
+  gambarUlang();
+})();
+</script>
+
+<script>
+/* ===================================================
+   MENU DARI GOOGLE SHEETS
+   Tempel tautan CSV dari "Publikasikan ke web" di antara tanda kutip.
+   Kalau kosong atau gagal dimuat, menu yang tertulis di file ini yang tampil.
+   =================================================== */
+var YA_SHEET = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsOLSZKUcKFPdyYLq6pPIkZIhB8BOPN4JAHyvYdrIQxeJjs_VNKQwF5mA3CpvPQ_IzkK76TggkqR0T/pub?gid=1622267089&single=true&output=csv';
+
+(function () {
+  /* ---------- Sapaan sesuai jam (WIB) ---------- */
+  var sapa = document.getElementById('ya-sapa');
+  if (sapa) {
+    var jam = new Date().getHours();
+    try { jam = +new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', hourCycle: 'h23' }).format(new Date()); } catch (e) {}
+    sapa.textContent =
+      jam >= 4 && jam < 11 ? 'Selamat pagi. Kopi pertama hari ini?' :
+      jam >= 11 && jam < 15 ? 'Selamat siang. Butuh yang dingin-dingin?' :
+      jam >= 15 && jam < 18 ? 'Selamat sore. Saatnya ngopi dan ngemil.' :
+                              'Selamat malam. Masih sempat secangkir lagi.';
+  }
+
+  if (!YA_SHEET) return;
+
+  function rp(n) { return 'Rp' + n.toLocaleString('id-ID'); }
+  function ya(v) { return /^(true|ya|y|x|1|v|✓|habis|andalan)$/i.test((v || '').trim()); }
+  function el(tag, cls, teks) { var e = document.createElement(tag); if (cls) e.className = cls; if (teks != null) e.textContent = teks; return e; }
+
+  function bacaCSV(t) {
+    var baris = [], kol = [], sel = '', kutip = false;
+    for (var i = 0; i < t.length; i++) {
+      var c = t[i];
+      if (kutip) {
+        if (c === '"') { if (t[i + 1] === '"') { sel += '"'; i++; } else kutip = false; }
+        else sel += c;
+      } else if (c === '"') kutip = true;
+      else if (c === ',') { kol.push(sel); sel = ''; }
+      else if (c === '\n' || c === '\r') {
+        if (c === '\r' && t[i + 1] === '\n') i++;
+        kol.push(sel); baris.push(kol); kol = []; sel = '';
+      } else sel += c;
+    }
+    if (sel || kol.length) { kol.push(sel); baris.push(kol); }
+    return baris;
+  }
+
+  function halamanDari(v) {
+    v = (v || '').trim().toLowerCase();
+    if (v.indexOf('kue') === 0 || v.indexOf('roti') === 0) return 'kue';
+    if (v.indexOf('spesial') === 0) return 'spesial';
+    if (v.indexOf('kopi') === 0) return 'kopi';
+    return v || 'lainnya';
+  }
+
+  function ambilData(teks) {
+    var b = bacaCSV(teks); if (b.length < 2) return [];
+    var kepala = b[0].map(function (h) { return h.trim().toLowerCase(); });
+    function idx(n) { return kepala.indexOf(n); }
+    var iH = idx('halaman'), iK = idx('kategori'), iN = idx('nama'), iP = idx('harga'),
+        iKet = idx('keterangan'), iA = idx('andalan'), iX = idx('habis');
+    return b.slice(1).map(function (r) {
+      return {
+        halaman: halamanDari(r[iH]), kategori: (r[iK] || '').trim(), nama: (r[iN] || '').trim(),
+        harga: parseInt((r[iP] || '').replace(/\D/g, ''), 10) || 0, ket: (r[iKet] || '').trim(),
+        andalan: ya(r[iA]), habis: ya(r[iX])
+      };
+    }).filter(function (m) { return m.nama && m.harga; });
+  }
+
+  function kelompok(daftar, kunci) {
+    var urut = [], isi = {};
+    daftar.forEach(function (m) { var k = kunci(m); if (!isi[k]) { isi[k] = []; urut.push(k); } isi[k].push(m); });
+    return urut.map(function (k) { return { judul: k, menu: isi[k] }; });
+  }
+
+  /* Gaya halaman Kopi / Kue / Spesial */
+  function itemDaftar(m) {
+    var li = el('li'); if (m.habis) li.className = 'ya-habis';
+    var baris = el('div', 'baris'), nama = el('span', 'nama', m.nama + ' ');
+    if (m.andalan) nama.appendChild(el('span', 'andalan', 'Andalan'));
+    if (m.habis) nama.appendChild(el('span', 'habis', 'Habis hari ini'));
+    baris.appendChild(nama); baris.appendChild(el('span', 'harga', rp(m.harga)));
+    li.appendChild(baris);
+    if (m.ket) li.appendChild(el('p', 'ket', m.ket));
+    return li;
+  }
+  /* Gaya halaman Menu lengkap */
+  function itemKartu(m) {
+    var li = el('li'); if (m.habis) li.className = 'ya-habis';
+    var nama = el('span', null, m.nama);
+    if (m.habis) nama.appendChild(el('span', 'habis', 'Habis hari ini'));
+    li.appendChild(nama); li.appendChild(el('span', 'harga', rp(m.harga)));
+    return li;
+  }
+
+  var JUDUL = { kopi: 'Kopi', lainnya: 'Bukan kopi', kue: 'Kue & roti', spesial: 'Spesial bulan ini' };
+  var URUT = ['kopi', 'lainnya', 'kue', 'spesial'];
+
+  function susunMenu(data) {
+    var wadah = document.getElementById('ya-menu');
+    if (wadah) {
+      var hal = wadah.getAttribute('data-halaman');
+      if (hal === 'semua') {
+        var kel = kelompok(data, function (m) { return m.halaman; });
+        kel.sort(function (a, b) { var x = URUT.indexOf(a.judul), y = URUT.indexOf(b.judul); return (x < 0 ? 99 : x) - (y < 0 ? 99 : y); });
+        wadah.innerHTML = '';
+        kel.forEach(function (g) {
+          var sec = el('section'), h2 = el('h2'), judul = JUDUL[g.judul] || (g.judul.charAt(0).toUpperCase() + g.judul.slice(1));
+          if (g.judul === 'spesial') h2.appendChild(el('span', 'pil', judul)); else h2.textContent = judul;
+          var ul = el('ul'); g.menu.forEach(function (m) { ul.appendChild(itemKartu(m)); });
+          sec.appendChild(h2); sec.appendChild(ul); wadah.appendChild(sec);
+        });
+      } else {
+        var milik = data.filter(function (m) { return m.halaman === hal; });
+        if (milik.length) {
+          wadah.innerHTML = '';
+          kelompok(milik, function (m) { return m.kategori || 'Menu'; }).forEach(function (g) {
+            wadah.appendChild(el('h2', null, g.judul));
+            var ul = el('ul'); g.menu.forEach(function (m) { ul.appendChild(itemDaftar(m)); });
+            wadah.appendChild(ul);
+          });
+        }
+      }
+    }
+    /* Menu andalan di halaman depan */
+    document.querySelectorAll('[data-menu]').forEach(function (sec) {
+      var cari = sec.getAttribute('data-menu').toLowerCase();
+      var m = data.filter(function (x) { return x.nama.toLowerCase() === cari; })[0];
+      if (!m) return;
+      var h = sec.querySelector('.harga'); if (h) h.textContent = rp(m.harga);
+      sec.classList.toggle('ya-habis', m.habis);
+      var lama = sec.querySelector('.habis'); if (lama) lama.remove();
+      if (m.habis && h) h.insertAdjacentElement('afterend', el('p', 'habis', 'Habis hari ini'));
+    });
+    if (window.yaPasang) window.yaPasang();
+  }
+
+  var url = YA_SHEET + (YA_SHEET.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now();
+  fetch(url).then(function (r) { if (!r.ok) throw r; return r.text(); })
+    .then(function (t) { var d = ambilData(t); if (d.length) susunMenu(d); })
+    .catch(function () { /* gagal: menu bawaan tetap tampil */ });
+})();
+</script>
 </body>
 </html>
