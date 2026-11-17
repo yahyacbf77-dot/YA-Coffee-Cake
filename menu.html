@@ -4,7 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<title>Menu Lengkap · YA Coffee &amp; Cake</title>
+<title>Menu · YA Coffee &amp; Cake</title>
+<!-- ====== TAMPILAN SAAT TAUTAN DIBAGIKAN (WhatsApp, Instagram, Facebook) + IKON ====== -->
+<meta name="description" content="Kopi, kue &amp; roti pilihan di Jl. Tanjung Dako (depan gilingan daging). Lihat menu, cek jam buka, dan pesan lewat WhatsApp.">
+<meta name="theme-color" content="#ecebe8">
+<link rel="icon" type="image/png" href="ikon.png">
+<link rel="apple-touch-icon" href="ikon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="id_ID">
+<meta property="og:site_name" content="YA Coffee &amp; Cake">
+<meta property="og:title" content="Menu · YA Coffee &amp; Cake">
+<meta property="og:description" content="Kopi, kue &amp; roti pilihan di Jl. Tanjung Dako (depan gilingan daging). Lihat menu, cek jam buka, dan pesan lewat WhatsApp.">
+<meta property="og:url" content="https://yahyacbf77-dot.github.io/YA-Coffee-Cake/menu.html">
+<meta property="og:image" content="https://yahyacbf77-dot.github.io/YA-Coffee-Cake/preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo YA Coffee &amp; Cake dengan es kopi susu gula aren, roti kopi, dan matcha latte">
+<meta name="twitter:card" content="summary_large_image">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
@@ -390,6 +407,15 @@
   .sub-menu { margin: 0.1rem 0 0; font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem, 4.6vw, 1.3rem); letter-spacing: 0.02em; color: var(--tinta-redup); }
   .kepala-menu .baris-info { justify-content: center; }
   .halaman.menu-tab { padding-top: 2.5rem; }
+
+  /* ====== KONFIRMASI DULU + BATAS JUMLAH ====== */
+  .ya-catatan-bayar {
+    margin: 1.25rem 0 0; padding: 0.7rem 0.9rem; border-radius: 12px;
+    background: #eef5ef; border-left: 3px solid #1f8f4e; color: #1f4d33; font-size: 0.9rem; line-height: 1.45;
+  }
+  .ya-batas { margin: 0.6rem 0 0; font-size: 0.8rem; color: #8a8178; line-height: 1.4; }
+  .ya-plus:disabled, .ya-tambah:disabled { opacity: 0.35; cursor: not-allowed; }
+  .ya-tambah:disabled:hover { background: transparent; color: #9a5b25; }
 </style>
 </head>
 <body>
@@ -584,7 +610,9 @@
     <label class="ya-label" for="ya-catatan">Catatan (opsional)</label>
     <textarea id="ya-catatan" placeholder="Contoh: es sedikit, gula dikurangi"></textarea>
 
-    <a class="ya-kirim" id="ya-kirim" href="#" target="_blank" rel="noopener">Kirim pesanan lewat WhatsApp</a>
+    <p class="ya-catatan-bayar"><strong>Jangan bayar dulu.</strong> Kami cek stok, lalu kirim info pembayaran (QRIS) lewat WhatsApp. Pesanan dibuat setelah pembayaran masuk.</p>
+    <p class="ya-batas">Maksimal 5 per menu dan 15 item per pesanan. Untuk pesanan lebih banyak, hubungi kami lewat WhatsApp.</p>
+    <a class="ya-kirim" id="ya-kirim" href="#" target="_blank" rel="noopener">Kirim permintaan pesanan</a>
     <button class="ya-kosongkan" type="button" id="ya-kosongkan">Kosongkan pesanan</button>
   </div>
 </div>
@@ -600,6 +628,8 @@ var YA_JADWAL = {
   jumat: [['06:30', '11:00'], ['16:00', '22:30']] // Jumat: istirahat 11.00–16.00
 };
 var YA_PESAN_TUTUP_AWAL = 30;     // pesanan WhatsApp ditutup 30 menit sebelum kedai tutup/istirahat
+var YA_MAKS_PER_MENU = 5;         // jumlah maksimal per menu dalam satu pesanan
+var YA_MAKS_TOTAL = 15;           // jumlah maksimal semua item dalam satu pesanan
 
 (function () {
   var KEY = 'yaPesanan';
@@ -659,7 +689,9 @@ var YA_PESAN_TUTUP_AWAL = 30;     // pesanan WhatsApp ditutup 30 menit sebelum k
   var cart = {};
   try { cart = JSON.parse(sessionStorage.getItem(KEY)) || {}; } catch (e) {}
   function simpan() { try { sessionStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) {} }
+  function totalItem() { var n = 0; Object.keys(cart).forEach(function (k) { n += cart[k].q; }); return n; }
   function ubah(nama, harga, d) {
+    if (d > 0 && ((cart[nama] ? cart[nama].q : 0) >= YA_MAKS_PER_MENU || totalItem() >= YA_MAKS_TOTAL)) return;
     var q = (cart[nama] ? cart[nama].q : 0) + d;
     if (q <= 0) delete cart[nama]; else cart[nama] = { h: harga, q: q };
     simpan(); gambarUlang();
@@ -683,6 +715,12 @@ var YA_PESAN_TUTUP_AWAL = 30;     // pesanan WhatsApp ditutup 30 menit sebelum k
         b.setAttribute('aria-label', (b.classList.contains('ya-kurang') ? 'Kurangi ' : 'Tambah ') + nama);
       });
       if (q) ctl.querySelector('.ya-jml').textContent = q;
+      // Batas jumlah: tombol tambah dimatikan kalau sudah maksimal
+      var penuh = totalItem() >= YA_MAKS_TOTAL, plus = ctl.querySelector('.ya-plus, .ya-tambah');
+      if (plus && (penuh || q >= YA_MAKS_PER_MENU)) {
+        plus.disabled = true;
+        plus.title = q >= YA_MAKS_PER_MENU ? 'Maksimal ' + YA_MAKS_PER_MENU + ' per menu' : 'Maksimal ' + YA_MAKS_TOTAL + ' item per pesanan';
+      }
     };
     return ctl;
   }
@@ -811,7 +849,8 @@ var YA_PESAN_TUTUP_AWAL = 30;     // pesanan WhatsApp ditutup 30 menit sebelum k
     infoPesan.className = 'ya-info-pesan'; infoPesan.hidden = true;
     jendelaTab.parentNode.insertBefore(infoPesan, jendelaTab);
   }
-  function bisaPesan() { if (tutupSementara !== null) return false; var s = sesiAktif(); return !!s && menitSekarang() <= s[1] - YA_PESAN_TUTUP_AWAL; }
+  var pesanMati = null;   // diisi dari Google Sheets (baris status: Pesanan online)
+  function bisaPesan() { if (tutupSementara !== null || pesanMati !== null) return false; var s = sesiAktif(); return !!s && menitSekarang() <= s[1] - YA_PESAN_TUTUP_AWAL; }
   function terapkanJam() {
     var bisa = bisaPesan(), t = menitSekarang();
     document.body.classList.toggle('ya-tutup-pesan', !bisa);
@@ -819,6 +858,8 @@ var YA_PESAN_TUTUP_AWAL = 30;     // pesanan WhatsApp ditutup 30 menit sebelum k
       infoPesan.hidden = bisa;
       infoPesan.textContent = tutupSementara !== null
         ? 'Kami sedang tutup sementara' + (tutupSementara ? ' (' + tutupSementara + ')' : '') + '. Pemesanan lewat WhatsApp dibuka lagi saat kami kembali buka. Menu tetap bisa dilihat.'
+        : pesanMati !== null
+        ? 'Pesanan online sedang tidak tersedia' + (pesanMati ? ' (' + pesanMati + ')' : '') + '. Silakan pesan langsung di kedai. Menu tetap bisa dilihat.'
         : 'Pemesanan lewat WhatsApp hari ini pukul ' + daftarSesi(sesiHari(sekarang().hari), YA_PESAN_TUTUP_AWAL) + ' WITA. Menu tetap bisa dilihat.';
     }
     var sa = sesiAktif();
@@ -834,6 +875,8 @@ var YA_PESAN_TUTUP_AWAL = 30;     // pesanan WhatsApp ditutup 30 menit sebelum k
 
   // Dipanggil oleh pembaca Google Sheets saat kotak "tutup sementara" dicentang
   window.yaTutupSementara = function (ket) { tutupSementara = ket || ''; tampilStatus(); terapkanJam(); };
+  // Dipanggil saat kotak "Pesanan online" dicentang (pesanan online dimatikan, kedai tetap buka)
+  window.yaPesanOnline = function (aktif, ket) { pesanMati = aktif ? null : (ket || ''); terapkanJam(); };
 
   // Susun pesan WhatsApp tepat sebelum dikirim
   kirim.addEventListener('click', function (e) {
@@ -860,6 +903,7 @@ var YA_PESAN_TUTUP_AWAL = 30;     // pesanan WhatsApp ditutup 30 menit sebelum k
     baris.push('Perkiraan diambil: ' + teksWaktu());
     var cat = document.getElementById('ya-catatan').value.trim();
     if (cat) baris.push('Catatan: ' + cat);
+    baris.push('', 'Saya tunggu konfirmasi stok dan info pembayaran. Terima kasih!');
     kirim.href = 'https://wa.me/' + YA_WA + '?text=' + encodeURIComponent(baris.join('\n'));
   });
 
@@ -1022,9 +1066,13 @@ var YA_SHEET = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsOLSZKUcKFPdyY
       var d = ambilData(t);
       var menu = d.filter(function (m) { return m.halaman !== 'status'; });
       if (menu.length) susunMenu(menu);
-      // Baris khusus: Halaman = status, centang kolom Habis = kedai tutup sementara
-      var st = d.filter(function (m) { return m.halaman === 'status'; })[0];
-      if (st && st.habis && window.yaTutupSementara) window.yaTutupSementara(st.ket);
+      // Baris khusus (Halaman = status). Centang kolom Habis untuk mengaktifkan:
+      //   "Tutup sementara" = kedai tutup;  "Pesanan online" = pesanan lewat web dimatikan
+      d.filter(function (m) { return m.halaman === 'status' && m.habis; }).forEach(function (st) {
+        var n = st.nama.toLowerCase();
+        if (n.indexOf('tutup') >= 0 && window.yaTutupSementara) window.yaTutupSementara(st.ket);
+        else if (n.indexOf('pesan') >= 0 && window.yaPesanOnline) window.yaPesanOnline(false, st.ket);
+      });
     })
     .catch(function () { /* gagal: menu bawaan tetap tampil */ });
 })();
