@@ -129,5 +129,16 @@ main .habis { background: #f8dcd7; color: #8f2d22; }
 .yo-gagal p { margin: 0 0 0.75rem; color: var(--tinta-redup); }
 .yo-gagal button { background: var(--gelap); color: #fff; border: 0; border-radius: 12px; padding: 0.6rem 1.1rem; font: inherit; font-weight: 600; cursor: pointer; }
 
+/* ---------- Media sosial & ulasan (dipasang oleh pesan-online.js) ---------- */
+.yo-sosmed { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
+.yo-sosmed a:not(.yo-ulasan) {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--kartu); border: 1px solid var(--garis); color: var(--karamel);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.yo-sosmed a:not(.yo-ulasan):hover { background: var(--karamel); color: #fff; }
+.yo-ulasan { background: var(--karamel); color: #fff !important; text-decoration: none; font-weight: 600; font-size: 0.85rem; border-radius: 999px; padding: 0.55rem 1rem; }
+.yo-sosmed .yo-ulasan { margin-left: auto; }
+
 /* ---------- Kaki halaman ---------- */
 footer { border-top: 1px solid var(--garis); padding-top: 1.1rem; }

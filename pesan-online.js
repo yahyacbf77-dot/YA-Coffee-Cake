@@ -10,6 +10,16 @@ var YA_SUPABASE_URL = 'https://yafjkwjcfknhymeoinqd.supabase.co';
 var YA_SUPABASE_KEY = 'sb_publishable_O89xf-d5lRz1J8zGshJxNQ_XP_In-X0';
 var YA_LOKASI = { lat: -0.8917, lng: 119.8707, zona: 8 };   // Kota Palu, WITA
 var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah azan, pesan online istirahat
+// Media sosial (ikon di bagian bawah halaman). Kosongkan '' untuk menyembunyikan salah satunya.
+var YA_SOSMED = {
+  instagram: 'https://www.instagram.com/yahya_taqi10/',
+  tiktok:    'https://www.tiktok.com/@yacbf77',
+  facebook:  'https://www.facebook.com/profile.php?id=61596730493171',
+  whatsapp:  'https://wa.me/6285186171117',
+  maps:      'https://maps.app.goo.gl/dekxzZD5N3fKKTtY6'
+};
+// Link "Beri ulasan" dari Google Maps / Google Bisnisku (Bagikan profil → Minta ulasan). Kosong = tombol tidak tampil.
+var YA_ULASAN = '';
 
 (function () {
   'use strict';
@@ -181,6 +191,32 @@ var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah az
   new MutationObserver(function () { pasangFotoKecil(); }).observe(document.documentElement, { childList: true, subtree: true });
   document.addEventListener('DOMContentLoaded', pasangFotoKecil);
 
+  /* Ikon media sosial + tombol ulasan Google di bagian bawah halaman */
+  var IKON_SOSMED = {
+    instagram: ['Instagram', '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor"/>'],
+    tiktok:    ['TikTok', '<path d="M14 3.5v11a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3.5c.4 2.6 2.4 4.6 5 4.8"/>'],
+    facebook:  ['Facebook', '<path d="M14.5 3.5h-1.8A3.7 3.7 0 0 0 9 7.2V10H7v3.5h2v7h3.5v-7h2.6l.6-3.5h-3.2V7.6c0-.6.4-1 1-1h1.8z"/>'],
+    whatsapp:  ['WhatsApp', '<path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9.2 8.6c.2 2.6 3.5 5.8 6.1 6.1l1.2-1.4-1.9-.9-.8.8c-1.1-.5-2.4-1.8-2.9-2.9l.8-.8-.9-1.9z"/>'],
+    maps:      ['Lokasi di Google Maps', '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.6"/>']
+  };
+  function pasangSosmed() {
+    var kaki = document.querySelector('main footer'); if (!kaki || kaki.querySelector('.yo-sosmed')) return;
+    var w = document.createElement('div'); w.className = 'yo-sosmed';
+    Object.keys(IKON_SOSMED).forEach(function (k) {
+      if (!YA_SOSMED[k]) return;
+      var a = document.createElement('a'); a.href = YA_SOSMED[k]; a.target = '_blank'; a.rel = 'noopener';
+      a.setAttribute('aria-label', IKON_SOSMED[k][0]); a.title = IKON_SOSMED[k][0];
+      a.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + IKON_SOSMED[k][1] + '</svg>';
+      w.appendChild(a);
+    });
+    if (YA_ULASAN) {
+      var u = document.createElement('a'); u.className = 'yo-ulasan'; u.href = YA_ULASAN; u.target = '_blank'; u.rel = 'noopener';
+      u.textContent = '★ Beri ulasan di Google'; w.appendChild(u);
+    }
+    kaki.appendChild(w);
+  }
+  document.addEventListener('DOMContentLoaded', pasangSosmed);
+
   /* Banner sapaan di halaman menu (desain.css) */
   function pasangHero() {
     var tab = document.querySelector('.tab-bar'); if (!tab || document.querySelector('.yo-hero')) return;
@@ -334,6 +370,7 @@ var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah az
         '<p class="yo-ket"></p>' +
         '<ul>' + (s.items || []).map(function (i) { return '<li>' + i.qty + '× <span></span></li>'; }).join('') + '</ul>' +
         '<p><b>Total ' + rp(s.total) + '</b> · bayar di kasir</p>' +
+        (s.status === 'selesai' && YA_ULASAN ? '<p style="margin-top:10px">Suka dengan pesananmu? Bantu kami dengan memberi bintang di Google.</p><div class="yo-aksi"><a class="yo-ulasan" href="' + YA_ULASAN + '" target="_blank" rel="noopener" style="flex:1;text-align:center;border-radius:12px;padding:12px">★ Beri ulasan di Google</a></div>' : '') +
         '<div class="yo-aksi">' + (s.status === 'menunggu' ? '<button type="button" data-yo="batal">Batalkan pesanan</button>' : '') +
         '<button type="button" class="yo-utama" data-yo="tutup">' + (akhir ? 'Tutup' : 'Kembali ke menu') + '</button></div>';
       kartu.querySelector('b').textContent = s.nama;
