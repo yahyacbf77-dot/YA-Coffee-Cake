@@ -60,9 +60,8 @@ var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah az
       var baris = ['Halaman,Kategori,Nama,Harga,Keterangan,Andalan,Habis,Foto'];
       menu.forEach(function (m) {
         kunciMenu[m.nama.replace(/\s+/g, ' ').trim()] = m.kunci;
-        // Stok terbatas yang tinggal sedikit: "Tinggal 3" di keterangan
-        var ket = m.keterangan || '';
-        if (m.sisa != null && m.sisa > 0 && m.sisa <= 5) ket = (ket ? ket + ' · ' : '') + 'Tinggal ' + m.sisa;
+        // Deskripsi menu tidak ditampilkan; baris keterangan hanya untuk stok yang tinggal sedikit ("Tinggal 3")
+        var ket = (m.sisa != null && m.sisa > 0 && m.sisa <= 5) ? 'Tinggal ' + m.sisa : '';
         baris.push([m.halaman, m.kelompok, m.nama, m.harga, ket, m.andalan ? 'TRUE' : 'FALSE', m.habis ? 'TRUE' : 'FALSE', m.foto || ''].map(csvSel).join(','));
       });
       if (toko && toko.tutup_sementara) baris.push(['status', '', 'Tutup sementara', '', toko.keterangan || '', '', 'TRUE', ''].map(csvSel).join(','));
@@ -127,6 +126,8 @@ var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah az
   }
   /* Foto kecil di kartu menu (menu yang punya foto). Ketuk foto = buka foto besar seperti ketuk nama. */
   function pasangFotoKecil() {
+    // Deskripsi menu disembunyikan (juga saat menu cadangan dari Google Sheets); catatan stok tetap
+    document.querySelectorAll('main ul li .ket').forEach(function (k) { if (k.textContent && !/^Tinggal \d+$/.test(k.textContent.trim())) k.textContent = ''; });
     document.querySelectorAll('main li[data-foto]').forEach(function (li) {
       if (li.querySelector(':scope > .yo-thumb')) return;
       var img = document.createElement('img');
