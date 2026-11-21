@@ -457,6 +457,7 @@
   .menu-tab .andalan, .menu-tab .habis { text-transform: none; }
 </style>
 <script src="pesan-online.js"></script>
+<link rel="stylesheet" href="desain.css">
 </head>
 <body>
 <main class="halaman menu-tab">
@@ -497,7 +498,7 @@
     <section class="panel" id="panel-kopi" role="tabpanel" aria-labelledby="tab-kopi" data-halaman="kopi">
       <h2>Kopi dingin</h2>
       <ul>
-        <li data-foto="foto/es-kopi-susu-gula-aren.webp">
+        <li data-foto="Foto/es-kopi-susu-gula-aren.webp">
           <div class="baris"><span class="nama">Es kopi susu gula aren <span class="andalan">Andalan</span></span><span class="harga">Rp15.000</span></div>
           <p class="ket">Espresso, susu segar, dan gula aren cair</p>
         </li>
@@ -537,7 +538,7 @@
     <section class="panel" id="panel-lainnya" role="tabpanel" aria-labelledby="tab-lainnya" data-halaman="lainnya">
       <h2>Non Coffee</h2>
       <ul>
-        <li data-foto="foto/matcha-latte.webp">
+        <li data-foto="Foto/matcha-latte.webp">
           <div class="baris"><span class="nama">Matcha latte</span><span class="harga">Rp25.000</span></div>
           <p class="ket">Matcha lembut dengan susu</p>
         </li>
@@ -555,7 +556,7 @@
       <div data-halaman="kue">
       <h2>Roti</h2>
       <ul>
-        <li data-foto="foto/roti-kopi.webp">
+        <li data-foto="Foto/roti-kopi.webp">
           <div class="baris"><span class="nama">Roti kopi <span class="andalan">Andalan</span></span><span class="harga">Rp22.000</span></div>
           <p class="ket">Lapisan kopi renyah di luar, roti lembut di dalam</p>
         </li>
@@ -594,7 +595,7 @@
     <section class="panel" id="panel-spesial" role="tabpanel" aria-labelledby="tab-spesial" data-halaman="spesial">
       <h2>Minuman</h2>
       <ul>
-        <li data-foto="foto/matcha-latte.webp">
+        <li data-foto="Foto/matcha-latte.webp">
           <div class="baris"><span class="nama">Es matcha latte <span class="andalan">Andalan</span></span><span class="harga">Rp25.000</span></div>
           <p class="ket">Matcha lembut di atas susu dingin</p>
         </li>
@@ -1046,7 +1047,7 @@ var YA_SHEET = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsOLSZKUcKFPdyY
     baris.appendChild(nama); baris.appendChild(el('span', 'harga', rp(m.harga)));
     li.appendChild(baris);
     if (m.ket) li.appendChild(el('p', 'ket', m.ket));
-    if (m.foto) li.setAttribute('data-foto', /^https?:\/\//.test(m.foto) ? m.foto : 'foto/' + m.foto);
+    if (m.foto) li.setAttribute('data-foto', /^https?:\/\//.test(m.foto) ? m.foto : 'Foto/' + m.foto);
     return li;
   }
   /* Gaya halaman Menu lengkap */
@@ -1207,7 +1208,7 @@ var YA_SHEET = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsOLSZKUcKFPdyY
    - Komputer: arahkan kursor ke nama menu, foto muncul melayang.
    - HP / klik: ketuk nama menu, foto muncul di bawahnya (ketuk lagi untuk menutup).
    Foto baru diunduh saat dibuka, jadi halaman tetap ringan.
-   Nama file foto diisi di kolom "Foto" Google Sheets (file disimpan di folder foto/).
+   Nama file foto diisi di kolom "Foto" Google Sheets (file disimpan di folder Foto/).
    =================================================== */
 (function () {
   var IKON = '<svg class="ya-ikon-foto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>';

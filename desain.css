@@ -1,0 +1,106 @@
+/* =====================================================================
+   DESAIN "Modern hangat" — gabungan C (modern, tombol tebal, kartu) + A (huruf serif, krem-karamel)
+   Dipasang setelah gaya bawaan di setiap halaman, jadi cukup ubah file ini untuk mengganti tampilan.
+   ===================================================================== */
+:root {
+  --latar: #f6f1ea;
+  --kartu: #fffdf9;
+  --tinta: #231a14;
+  --tinta-redup: #7a6553;
+  --karamel: #9a5b25;
+  --karamel-tua: #7a4519;
+  --krem: #fff7ee;
+  --garis: #ece2d5;
+  --gelap: #231a14;
+}
+body { background: var(--latar); color: var(--tinta); }
+.halaman { padding-left: 1.1rem; padding-right: 1.1rem; }
+
+/* ---------- Judul kelompok menu: serif + garis karamel (gaya A) ---------- */
+main h2 {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-family: var(--serif, "Cormorant Garamond", Georgia, serif);
+  font-weight: 700; font-size: 0.95rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--karamel); margin: 1.6rem 0 0.6rem;
+}
+main h2::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, #d9c4ab, transparent); }
+
+/* ---------- Setiap menu jadi kartu (gaya C) ---------- */
+main ul { display: flex; flex-direction: column; gap: 0.6rem; }
+main ul li, .menu-tab li {
+  background: var(--kartu); border: 1px solid var(--garis); border-radius: 18px;
+  padding: 0.85rem 0.95rem; box-shadow: 0 6px 16px -14px rgba(60, 35, 15, 0.45);
+}
+main .nama { font-weight: 500; font-size: 1.05rem; color: var(--tinta); }
+.menu-tab .nama { font-size: 1.02rem; }
+main .harga { font-size: 1.15rem; color: var(--karamel); }
+main .ket { color: var(--tinta-redup); }
+main .andalan {
+  background: var(--karamel); color: var(--krem); border-color: var(--karamel);
+  font-weight: 500; letter-spacing: 0.02em;
+}
+li.ya-habis { opacity: 0.62; box-shadow: none; }
+/* Foto kecil di kartu (dipasang oleh pesan-online.js) */
+main li.yo-ada-foto { position: relative; padding-left: 5.2rem; min-height: 5.2rem; }
+main li .yo-thumb {
+  position: absolute; left: 0.75rem; top: 0.75rem; width: 3.8rem; height: 3.8rem;
+  object-fit: cover; border-radius: 14px; background: #efe5d8; cursor: pointer;
+}
+main li.ya-habis .yo-thumb { filter: grayscale(0.8); }
+main .habis { background: #f8dcd7; color: #8f2d22; }
+
+/* ---------- Tombol tambah: tebal & gelap (gaya C) ---------- */
+.ya-tambah, .menu-tab .ya-tambah {
+  background: var(--gelap); color: #fff; border: 0; font-weight: 600;
+  border-radius: 12px; padding: 0.35rem 0.95rem; min-height: 36px;
+}
+.ya-tambah:hover { background: var(--karamel); color: #fff; }
+.ya-kurang, .ya-plus { border-radius: 12px; border-color: var(--gelap); background: var(--gelap); }
+.ya-kurang { background: transparent; color: var(--gelap); }
+.ya-tambah:disabled, .ya-plus:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ---------- Tab kategori ---------- */
+.tab-bar { background: var(--kartu); border: 1px solid var(--garis); box-shadow: 0 -10px 0 10px var(--latar); }
+.tab-penanda { background: var(--karamel); }
+.tab-bar button { font-weight: 500; }
+
+/* ---------- Status buka & alamat ---------- */
+#ya-status, .ya-peta { background: var(--kartu); border: 1px solid var(--garis); }
+
+/* ---------- Banner sapaan (dibuat oleh pesan-online.js di halaman menu) ---------- */
+.yo-hero {
+  background: var(--karamel); color: var(--krem); border-radius: 20px;
+  padding: 1rem 1.1rem; margin: 0 0 1.6rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem 0.75rem;
+}
+.yo-hero .yo-salam { font-size: 0.8rem; opacity: 0.85; }
+.yo-hero .yo-ajak { font-family: var(--serif, Georgia, serif); font-size: 1.45rem; font-weight: 700; line-height: 1.15; margin: 0.1rem 0 0; }
+.yo-hero .yo-pil { flex-shrink: 0; background: var(--krem); color: var(--karamel-tua); border-radius: 999px; padding: 0.35rem 0.8rem; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+
+/* ---------- Halaman depan ---------- */
+#ya-sapa {
+  background: var(--karamel); color: var(--krem); border-radius: 18px;
+  padding: 0.7rem 1rem; text-align: left;
+}
+#ya-sapa .sapa-teks, #ya-sapa .sapa-skrip { color: var(--krem) !important; }
+.item {
+  background: var(--kartu); border: 1px solid var(--garis); border-radius: 24px;
+  padding: 1.1rem 1.1rem 0.9rem; margin-bottom: 1rem; box-shadow: 0 10px 24px -20px rgba(60, 35, 15, 0.5);
+}
+.item h2 { display: block; font-size: clamp(1.7rem, 7vw, 2.1rem); letter-spacing: 0; text-transform: none; color: var(--tinta); margin: 0 0 0.4rem; line-height: 1.05; }
+.item h2::after { display: none; }
+.tombol {
+  background: var(--gelap) !important; color: #fff !important; border-radius: 16px !important;
+  padding: 0.95rem 1.4rem !important; font-weight: 600; border: 0 !important;
+}
+
+/* ---------- Bar pesanan & lembar pesanan ---------- */
+#ya-bar { border-radius: 16px; background: var(--gelap); }
+#ya-bar .ya-total { color: #f1c28f; }
+.ya-panel { background: var(--kartu); }
+.ya-opsi span { border-radius: 12px; }
+.ya-opsi input:checked + span { background: var(--gelap); border-color: var(--gelap); }
+.ya-kirim { background: var(--karamel); border-radius: 16px; font-weight: 600; }
+.ya-kirim:hover { background: var(--karamel-tua); }
+
+/* ---------- Kaki halaman ---------- */
+footer { border-top: 1px solid var(--garis); padding-top: 1.1rem; }

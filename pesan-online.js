@@ -57,12 +57,15 @@ var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah az
       toko = r[1];
       if (!menu.length) throw new Error('menu HPP kosong');
       kunciMenu = {};
-      var baris = ['Halaman,Kategori,Nama,Harga,Keterangan,Andalan,Habis'];
+      var baris = ['Halaman,Kategori,Nama,Harga,Keterangan,Andalan,Habis,Foto'];
       menu.forEach(function (m) {
         kunciMenu[m.nama.replace(/\s+/g, ' ').trim()] = m.kunci;
-        baris.push([m.halaman, m.kelompok, m.nama, m.harga, m.keterangan, m.andalan ? 'TRUE' : 'FALSE', m.habis ? 'TRUE' : 'FALSE'].map(csvSel).join(','));
+        // Stok terbatas yang tinggal sedikit: "Tinggal 3" di keterangan
+        var ket = m.keterangan || '';
+        if (m.sisa != null && m.sisa > 0 && m.sisa <= 5) ket = (ket ? ket + ' · ' : '') + 'Tinggal ' + m.sisa;
+        baris.push([m.halaman, m.kelompok, m.nama, m.harga, ket, m.andalan ? 'TRUE' : 'FALSE', m.habis ? 'TRUE' : 'FALSE', m.foto || ''].map(csvSel).join(','));
       });
-      if (toko && toko.tutup_sementara) baris.push(['status', '', 'Tutup sementara', '', toko.keterangan || '', '', 'TRUE'].map(csvSel).join(','));
+      if (toko && toko.tutup_sementara) baris.push(['status', '', 'Tutup sementara', '', toko.keterangan || '', '', 'TRUE', ''].map(csvSel).join(','));
       onlineSiap = true;
       setTimeout(function () { ubahTeks(); terapkanStatus(); }, 0);
       return baris.join('\n');
@@ -120,8 +123,42 @@ var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah az
     else if (ist && ist > new Date()) window.yaPesanOnline(false, 'istirahat sebentar, buka lagi pukul ' + jamTeks(menitWITA(ist)));
     else if (s) window.yaPesanOnline(false, 'istirahat sholat ' + s.nama + ', buka lagi pukul ' + jamTeks(s.menit + YA_ISTIRAHAT_SHOLAT));
     else window.yaPesanOnline(true);
-    ubahTeks();
+    ubahTeks(); heroPil();
   }
+  /* Foto kecil di kartu menu (menu yang punya foto). Ketuk foto = buka foto besar seperti ketuk nama. */
+  function pasangFotoKecil() {
+    document.querySelectorAll('main li[data-foto]').forEach(function (li) {
+      if (li.querySelector(':scope > .yo-thumb')) return;
+      var img = document.createElement('img');
+      img.className = 'yo-thumb'; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+      img.src = li.getAttribute('data-foto');
+      img.addEventListener('error', function () { img.remove(); li.classList.remove('yo-ada-foto'); });
+      img.addEventListener('click', function () { var n = li.querySelector('.nama'); if (n) n.click(); });
+      li.insertBefore(img, li.firstChild); li.classList.add('yo-ada-foto');
+    });
+  }
+  new MutationObserver(function () { pasangFotoKecil(); }).observe(document.documentElement, { childList: true, subtree: true });
+  document.addEventListener('DOMContentLoaded', pasangFotoKecil);
+
+  /* Banner sapaan di halaman menu (desain.css) */
+  function pasangHero() {
+    var tab = document.querySelector('.tab-bar'); if (!tab || document.querySelector('.yo-hero')) return;
+    var j = Math.floor(menitWITA() / 60);
+    var s = j >= 4 && j < 11 ? ['Selamat pagi', 'Kopi pertama hari ini?'] : j >= 11 && j < 15 ? ['Selamat siang', 'Butuh yang dingin-dingin?']
+          : j >= 15 && j < 18 ? ['Selamat sore', 'Saatnya ngopi dan ngemil.'] : ['Selamat malam', 'Masih sempat secangkir lagi.'];
+    var h = document.createElement('div'); h.className = 'yo-hero';
+    h.innerHTML = '<div><div class="yo-salam"></div><p class="yo-ajak"></p></div><span class="yo-pil"></span>';
+    h.querySelector('.yo-salam').textContent = s[0]; h.querySelector('.yo-ajak').textContent = s[1];
+    tab.parentNode.insertBefore(h, tab);
+    heroPil();
+  }
+  function heroPil() {
+    var p = document.querySelector('.yo-hero .yo-pil'); if (!p) return;
+    var tutup = document.body.classList.contains('ya-tutup-pesan');
+    p.textContent = tutup ? 'Pesan online tutup' : 'Pesan, ambil ± 15 menit';
+  }
+  document.addEventListener('DOMContentLoaded', pasangHero);
+  setInterval(heroPil, 30000);
   function cekToko() { rpc('toko_publik').then(function (t) { toko = t; terapkanStatus(); }).catch(function () { terapkanStatus(); }); }
   setInterval(terapkanStatus, 30000);
   setInterval(cekToko, 60000);
@@ -145,6 +182,12 @@ var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah az
       lbl.innerHTML = '<input type="radio" name="ya-cara" value="Makan di sini"><span>Makan di sini</span>';
       cara.closest('label').parentNode.appendChild(lbl);
     }
+    // Label yang lebih jelas (nilai yang dikirim ke kasir tetap sama)
+    var LABEL_CARA = { 'Saya sendiri': 'Bawa pulang (ambil sendiri)', 'Ojek online': 'Diambil ojek online' };
+    document.querySelectorAll('input[name="ya-cara"]').forEach(function (r) {
+      var sp = r.parentNode.querySelector('span'); if (sp && LABEL_CARA[r.value]) sp.textContent = LABEL_CARA[r.value];
+    });
+    document.querySelectorAll('.ya-label').forEach(function (el) { if (/diambil oleh/i.test(el.textContent)) el.textContent = 'Cara pesan'; });
   }
   var amati = new MutationObserver(function () { if (onlineSiap && !pakaiWA) { var info = document.querySelector('.ya-info-pesan'); if (info && /WhatsApp/.test(info.textContent)) ubahTeks(); } });
   document.addEventListener('DOMContentLoaded', function () { var info = document.querySelector('.ya-info-pesan'); if (info) amati.observe(info, { childList: true, characterData: true, subtree: true }); });
