@@ -50,14 +50,50 @@ var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah az
   }
   function csvSel(v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
 
-  /* ---------- 1. Menu dari HPP (dipakai oleh pembaca menu di setiap halaman) ---------- */
+  /* ---------- 1. Menu dari HPP (dipakai oleh pembaca menu di setiap halaman) ----------
+     Hanya menu dari HPP yang tampil. Daftar menu lama (Google Sheets / tertulis di halaman) tidak dipakai lagi:
+     selama memuat disembunyikan, dan kalau HPP gagal dimuat muncul pesan, bukan menu/harga lama. */
+  var KEPALA_CSV = 'Halaman,Kategori,Nama,Harga,Keterangan,Andalan,Habis,Foto';
+  document.documentElement.classList.add('yo-muat');
+  function menuGagal(teks) {
+    document.documentElement.classList.remove('yo-muat');
+    var wadah = document.querySelectorAll('main [data-halaman], #ya-menu');
+    if (!wadah.length) return;
+    wadah.forEach(function (w) {
+      w.querySelectorAll('ul, h2').forEach(function (x) { x.remove(); });
+      if (!w.querySelector('.yo-gagal')) {
+        var p = document.createElement('div'); p.className = 'yo-gagal';
+        p.innerHTML = '<p></p><button type="button">Muat ulang</button>';
+        p.querySelector('p').textContent = teks;
+        p.querySelector('button').addEventListener('click', function () { location.reload(); });
+        w.insertBefore(p, w.firstChild);
+      }
+    });
+  }
+  function ambilMenu(coba) {
+    return Promise.all([rpc('menu_publik'), rpc('toko_publik').catch(function () { return null; })]).catch(function (e) {
+      if (coba < 3 && !e.server) return new Promise(function (ok) { setTimeout(ok, 1500 * coba); }).then(function () { return ambilMenu(coba + 1); });
+      throw e;
+    });
+  }
   window.yaMenuHPP = function () {
-    return Promise.all([rpc('menu_publik'), rpc('toko_publik').catch(function () { return null; })]).then(function (r) {
+    return ambilMenu(1).then(function (r) {
       var menu = r[0] || [];
       toko = r[1];
-      if (!menu.length) throw new Error('menu HPP kosong');
+      if (!menu.length) { onlineSiap = false; setTimeout(function () { menuGagal('Menu sedang disiapkan. Silakan cek lagi sebentar, atau pesan langsung di kedai.'); }, 0); return KEPALA_CSV; }
+      var adaHalaman = {}; menu.forEach(function (m) { adaHalaman[m.halaman] = true; });
+      setTimeout(function () {
+        // Halaman/tab yang belum punya menu dari HPP: kosongkan daftar lama
+        document.querySelectorAll('main [data-halaman]').forEach(function (w) {
+          var hal = w.getAttribute('data-halaman');
+          if (hal === 'semua' || adaHalaman[hal]) return;
+          w.querySelectorAll('ul, h2').forEach(function (x) { x.remove(); });
+          if (!w.querySelector('.yo-kosong')) { var p = document.createElement('p'); p.className = 'yo-kosong'; p.textContent = 'Belum ada menu di sini.'; w.insertBefore(p, w.firstChild); }
+        });
+        document.documentElement.classList.remove('yo-muat');
+      }, 0);
       kunciMenu = {};
-      var baris = ['Halaman,Kategori,Nama,Harga,Keterangan,Andalan,Habis,Foto'];
+      var baris = [KEPALA_CSV];
       menu.forEach(function (m) {
         kunciMenu[m.nama.replace(/\s+/g, ' ').trim()] = m.kunci;
         // Deskripsi menu tidak ditampilkan; baris keterangan hanya untuk stok yang tinggal sedikit ("Tinggal 3")
@@ -68,6 +104,10 @@ var YA_ISTIRAHAT_SHOLAT = 15;                                // menit setelah az
       onlineSiap = true;
       setTimeout(function () { ubahTeks(); terapkanStatus(); }, 0);
       return baris.join('\n');
+    }).catch(function () {
+      // Gagal terhubung: jangan pakai menu lama dari Google Sheets
+      setTimeout(function () { menuGagal('Menu belum bisa dimuat. Periksa koneksi internet, lalu muat ulang halaman.'); }, 0);
+      return KEPALA_CSV;
     });
   };
 
