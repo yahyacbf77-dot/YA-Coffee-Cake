@@ -456,6 +456,7 @@
   .menu-tab .nama, .ya-panel .ya-nama, #ya-foto-pop p { text-transform: capitalize; }
   .menu-tab .andalan, .menu-tab .habis { text-transform: none; }
 </style>
+<script src="pesan-online.js"></script>
 </head>
 <body>
 <main class="halaman menu-tab">
@@ -1109,7 +1110,7 @@ var YA_SHEET = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsOLSZKUcKFPdyY
   }
 
   var url = YA_SHEET + (YA_SHEET.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now();
-  fetch(url).then(function (r) { if (!r.ok) throw r; return r.text(); })
+  (window.yaMenuHPP ? window.yaMenuHPP().catch(function () { return fetch(url).then(function (r) { if (!r.ok) throw r; return r.text(); }); }) : fetch(url).then(function (r) { if (!r.ok) throw r; return r.text(); }))
     .then(function (t) {
       var d = ambilData(t);
       var menu = d.filter(function (m) { return m.halaman !== 'status'; });
