@@ -270,6 +270,19 @@ var YA_ULASAN = '';
   document.addEventListener('DOMContentLoaded', function () { var info = document.querySelector('.ya-info-pesan'); if (info) amati.observe(info, { childList: true, characterData: true, subtree: true }); });
 
   /* ---------- 5. Kirim pesanan ke kasir ---------- */
+  // Jam buka diambil dari YA_JADWAL di halaman; database mengecek ulang. Hasil: teks kesalahan, atau kosong kalau boleh.
+  function hariWITA() {
+    try { return { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Makassar', weekday: 'short' }).format(new Date())]; }
+    catch (e) { return new Date().getDay(); }
+  }
+  function cekJamAmbil(menit) {
+    if (!window.YA_JADWAL) return '';
+    var ss = (hariWITA() === 5 ? YA_JADWAL.jumat : YA_JADWAL.biasa).map(function (s) {
+      return s.map(function (j) { var p = j.split(':'); return (+p[0]) * 60 + (+p[1]); });
+    });
+    if (ss.some(function (s) { return menit >= s[0] && menit <= s[1]; })) return '';
+    return 'Kedai tutup pada pukul ' + jamTeks(menit) + '. Pilih jam ambil antara ' + ss.map(function (s) { return jamTeks(s[0]) + '–' + jamTeks(s[1]); }).join(' atau ') + '.';
+  }
   function pesanError(teks) {
     var el = document.getElementById('ya-online-err');
     if (!el) {
@@ -304,6 +317,9 @@ var YA_ULASAN = '';
       menit = now + (+w.value || 15);
       teks = (w.value === '15' ? 'secepatnya' : w.options[w.selectedIndex].text) + ', sekitar ' + jamTeks(menit);
     }
+    // Jam ambil harus di dalam jam buka hari ini (misalnya Jumat 11.00-16.00 tidak bisa)
+    var salahJam = cekJamAmbil(menit);
+    if (salahJam) { pesanError(salahJam); if (w.value === 'jam') { jamEl.hidden = false; jamEl.focus(); } return; }
     var caraEl = document.querySelector('input[name="ya-cara"]:checked');
     var catatan = (document.getElementById('ya-catatan').value || '').trim();
     kirim.dataset.kirim = '1'; var label = kirim.textContent; kirim.textContent = 'Mengirim…';
@@ -370,6 +386,8 @@ var YA_ULASAN = '';
         '<p class="yo-ket"></p>' +
         '<ul>' + (s.items || []).map(function (i) { return '<li>' + i.qty + '× <span></span></li>'; }).join('') + '</ul>' +
         '<p><b>Total ' + rp(s.total) + '</b> · bayar di kasir</p>' +
+        (s.status === 'menunggu' && s.tunggu_menit >= 5 && YA_SOSMED.whatsapp
+          ? '<p style="background:#fbecc9;color:#7a5200;border-radius:12px;padding:10px 12px">Kasir belum menjawab. Kamu bisa menghubungi kami lewat WhatsApp. Kalau tidak dijawab dalam ' + (+s.batas_menit || 20) + ' menit, pesanan dibatalkan otomatis.</p><div class="yo-aksi"><a class="yo-ulasan" href="' + YA_SOSMED.whatsapp + '?text=' + encodeURIComponent('Halo YA Coffee & Cake, pesanan online saya ' + s.kode + ' atas nama ' + s.nama + ' belum dijawab.') + '" target="_blank" rel="noopener" style="flex:1;text-align:center;border-radius:12px;padding:12px">Hubungi lewat WhatsApp</a></div>' : '') +
         (s.status === 'selesai' && YA_ULASAN ? '<p style="margin-top:10px">Suka dengan pesananmu? Bantu kami dengan memberi bintang di Google.</p><div class="yo-aksi"><a class="yo-ulasan" href="' + YA_ULASAN + '" target="_blank" rel="noopener" style="flex:1;text-align:center;border-radius:12px;padding:12px">★ Beri ulasan di Google</a></div>' : '') +
         '<div class="yo-aksi">' + (s.status === 'menunggu' ? '<button type="button" data-yo="batal">Batalkan pesanan</button>' : '') +
         '<button type="button" class="yo-utama" data-yo="tutup">' + (akhir ? 'Tutup' : 'Kembali ke menu') + '</button></div>';
